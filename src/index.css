@@ -1,0 +1,752 @@
+/* ==========================================================================
+   SUCE Design Tokens
+   Palette: near-black ink, charcoal, paper white, two silvers, steel grey.
+   Display face: Fraunces (restrained, headlines only)
+   Body face: Inter
+   Utility/data face: IBM Plex Mono (prices, SKUs, labels)
+   Signature: metallic sheen sweep on interactive cards + mono price treatment
+   ========================================================================== */
+
+:root {
+  --suce-ink: #0a0a0b;
+  --suce-charcoal: #1e1f22;
+  --suce-paper: #fafafa;
+  --suce-silver: #b8bcc2;
+  --suce-silver-light: #e4e5e8;
+  --suce-steel: #6b6e76;
+  --suce-white: #ffffff;
+  --suce-danger: #b3261e;
+  --suce-success: #2e6e4e;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --container-max: 1280px;
+
+  --shadow-soft: 0 1px 3px rgba(10, 10, 11, 0.06);
+  --shadow-lift: 0 12px 32px rgba(10, 10, 11, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--suce-ink);
+  background: var(--suce-paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--suce-ink);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--suce-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ----------------------------- Layout shells ----------------------------- */
+
+.container-suce {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 64px 0;
+}
+
+.hairline {
+  border: none;
+  border-top: 1px solid var(--suce-silver-light);
+  margin: 0;
+}
+
+/* -------------------------------- Eyebrow -------------------------------- */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--suce-steel);
+}
+
+/* -------------------------------- Buttons -------------------------------- */
+
+.btn-suce-primary {
+  background: var(--suce-ink);
+  color: var(--suce-white);
+  border: 1px solid var(--suce-ink);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: background 0.18s ease, transform 0.12s ease;
+}
+.btn-suce-primary:hover {
+  background: #2b2c2f;
+  color: var(--suce-white);
+}
+.btn-suce-primary:active {
+  transform: translateY(1px);
+}
+.btn-suce-primary:disabled {
+  background: var(--suce-silver);
+  border-color: var(--suce-silver);
+  cursor: not-allowed;
+}
+
+.btn-suce-outline {
+  background: transparent;
+  color: var(--suce-ink);
+  border: 1px solid var(--suce-ink);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1.5rem;
+  font-weight: 500;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.btn-suce-outline:hover {
+  background: var(--suce-ink);
+  color: var(--suce-white);
+}
+
+.btn-suce-ghost {
+  background: transparent;
+  color: var(--suce-steel);
+  border: none;
+  padding: 0.4rem 0.6rem;
+}
+.btn-suce-ghost:hover {
+  color: var(--suce-ink);
+}
+
+.btn-suce-danger {
+  background: transparent;
+  color: var(--suce-danger);
+  border: 1px solid var(--suce-danger);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 1.1rem;
+}
+.btn-suce-danger:hover {
+  background: var(--suce-danger);
+  color: var(--suce-white);
+}
+
+/* -------------------------------- Navbar --------------------------------- */
+
+.suce-navbar {
+  background: var(--suce-ink);
+  border-bottom: 1px solid #2b2c2f;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.suce-wordmark {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+  color: var(--suce-white);
+  font-weight: 600;
+}
+
+.suce-nav-link {
+  color: var(--suce-silver);
+  font-size: 0.92rem;
+  font-weight: 500;
+  position: relative;
+  padding: 0.3rem 0;
+}
+.suce-nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0%;
+  height: 1px;
+  background: var(--suce-white);
+  transition: width 0.2s ease;
+}
+.suce-nav-link:hover {
+  color: var(--suce-white);
+}
+.suce-nav-link:hover::after {
+  width: 100%;
+}
+.suce-nav-link.active {
+  color: var(--suce-white);
+}
+.suce-nav-link.active::after {
+  width: 100%;
+}
+
+.suce-icon-btn {
+  color: var(--suce-silver);
+  position: relative;
+  font-size: 1.15rem;
+}
+.suce-icon-btn:hover {
+  color: var(--suce-white);
+}
+
+.suce-badge-count {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: var(--suce-white);
+  color: var(--suce-ink);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --------------------------------- Hero ----------------------------------- */
+
+.suce-hero {
+  background: var(--suce-ink);
+  color: var(--suce-white);
+  position: relative;
+  overflow: hidden;
+}
+
+.suce-hero-headline {
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  line-height: 1.05;
+  color: var(--suce-white);
+}
+
+.suce-hero-panel {
+  background: linear-gradient(135deg, #1e1f22 0%, #0a0a0b 100%);
+  border-radius: var(--radius-md);
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.6s ease;
+}
+.suce-hero-panel:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+.suce-hero-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.08) 48%, transparent 66%);
+  background-size: 200% 200%;
+  background-position: 0% 0%;
+  animation: suce-hero-shimmer 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes suce-hero-shimmer {
+  0%, 100% { background-position: 0% 0%; }
+  50%      { background-position: 100% 100%; }
+}
+.suce-hero-panel.slide-western { background: linear-gradient(135deg, #2d2f63 0%, #1a1b3d 55%, #0a0a0b 100%); }
+.suce-hero-panel.slide-saree   { background: linear-gradient(135deg, #7a3b2e 0%, #4a2018 55%, #1e1f22 100%); }
+.suce-hero-panel.slide-langa   { background: linear-gradient(135deg, #6b3d6e 0%, #3a1f3d 55%, #1e1f22 100%); }
+
+.suce-hero-panel > div:first-child {
+  position: relative;
+  z-index: 1;
+  animation: suce-hero-fade-in 0.5s ease;
+}
+@keyframes suce-hero-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ----------------------------- Hero slide dots ------------------------------
+   Click-to-jump indicators for the auto-rotating collection slides inside
+   the hero panel.
+   --------------------------------------------------------------------------- */
+
+.suce-hero-dots {
+  display: flex;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+.suce-hero-dot {
+  width: 22px;
+  height: 4px;
+  border-radius: 2px;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background 0.2s ease, width 0.2s ease;
+}
+.suce-hero-dot.is-active {
+  background: #fff;
+  width: 32px;
+}
+.suce-hero-dot:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* ----------------------------- Product card -------------------------------
+   Signature element: a diagonal silver sheen sweeps across on hover/focus.
+   --------------------------------------------------------------------------- */
+
+.product-card {
+  position: relative;
+  background: var(--suce-white);
+  border: 1px solid var(--suce-silver-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.product-card:hover,
+.product-card:focus-within {
+  border-color: var(--suce-silver);
+  box-shadow: var(--shadow-lift);
+}
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 48%,
+    rgba(184, 188, 194, 0.35) 56%,
+    transparent 72%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+  z-index: 2;
+}
+.product-card:hover::before,
+.product-card:focus-within::before {
+  animation: suce-sheen 0.9s ease forwards;
+}
+@keyframes suce-sheen {
+  to {
+    transform: translateX(120%);
+  }
+}
+
+.product-card-media {
+  aspect-ratio: 1 / 1;
+  background: var(--suce-silver-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--suce-silver);
+  font-size: 2rem;
+}
+
+.product-card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.product-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--suce-ink);
+  line-height: 1.3;
+}
+
+.product-category {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--suce-steel);
+}
+
+.price-tag {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--suce-ink);
+}
+
+.price-tag .price-strike {
+  color: var(--suce-steel);
+  text-decoration: line-through;
+  font-weight: 400;
+  font-size: 0.85em;
+  margin-left: 6px;
+}
+
+.price-tag .price-discount {
+  color: var(--suce-success);
+  font-size: 0.75em;
+  margin-left: 6px;
+}
+
+/* --------------------------------- Cards ---------------------------------- */
+
+.card-suce {
+  background: var(--suce-white);
+  border: 1px solid var(--suce-silver-light);
+  border-radius: var(--radius-md);
+}
+
+.surface-charcoal {
+  background: var(--suce-charcoal);
+  color: var(--suce-white);
+}
+
+/* -------------------------------- Inputs ----------------------------------- */
+
+.form-control-suce,
+.form-select-suce {
+  border: 1px solid var(--suce-silver);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  background: var(--suce-white);
+  width: 100%;
+  font-family: var(--font-body);
+}
+.form-control-suce:focus,
+.form-select-suce:focus {
+  outline: none;
+  border-color: var(--suce-ink);
+  box-shadow: 0 0 0 3px rgba(10, 10, 11, 0.08);
+}
+
+.form-label-suce {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--suce-steel);
+  margin-bottom: 0.3rem;
+  display: block;
+}
+
+/* -------------------------------- Footer ----------------------------------- */
+
+.suce-footer {
+  background: var(--suce-ink);
+  color: var(--suce-silver);
+}
+.suce-footer a:hover {
+  color: var(--suce-white);
+}
+
+/* ----------------------------- Skeleton loader ------------------------------ */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--suce-silver-light) 25%, #f0f0f1 37%, var(--suce-silver-light) 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* -------------------------------- Badges ------------------------------------ */
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--suce-silver);
+  color: var(--suce-steel);
+}
+.status-pill.pending { color: #8a6d1f; border-color: #d8c27a; background: #fbf6e6; }
+.status-pill.confirmed,
+.status-pill.processing { color: #1f5f8a; border-color: #7aa8d8; background: #e8f1fb; }
+.status-pill.shipped { color: #5a3fa0; border-color: #b59ee0; background: #f1ebfb; }
+.status-pill.delivered { color: var(--suce-success); border-color: #8fc4a8; background: #eaf6ef; }
+.status-pill.cancelled { color: var(--suce-danger); border-color: #e0a39e; background: #fbecea; }
+
+/* ------------------------------ Admin shell --------------------------------- */
+
+.admin-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  background: var(--suce-ink);
+  color: var(--suce-silver);
+  padding: 24px 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.admin-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 1.5rem;
+  color: var(--suce-silver);
+  font-size: 0.9rem;
+  border-left: 2px solid transparent;
+}
+.admin-sidebar-link:hover {
+  color: var(--suce-white);
+  background: rgba(255, 255, 255, 0.04);
+}
+.admin-sidebar-link.active {
+  color: var(--suce-white);
+  border-left-color: var(--suce-white);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.admin-main {
+  padding: 32px;
+  background: var(--suce-paper);
+}
+
+.stat-card {
+  background: var(--suce-white);
+  border: 1px solid var(--suce-silver-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.stat-card .stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.9rem;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+  .admin-sidebar {
+    display: none;
+  }
+}
+
+/* ------------------------------ Brand intro ---------------------------------
+   Full-bleed welcome splash, plays once per session on first load.
+   --------------------------------------------------------------------------- */
+
+.suce-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: #060611;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.65s ease;
+}
+.suce-intro-closing {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.suce-intro-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #060611;
+}
+
+.suce-intro-skip {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  animation: suce-skip-in 0.5s ease forwards;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.suce-intro-skip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+@keyframes suce-skip-in {
+  to { opacity: 1; }
+}
+
+/* --------------------------------- Logo mark --------------------------------- */
+
+.suce-logo-mark {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+@media (max-width: 575px) {
+  .suce-logo-mark {
+    height: 28px;
+  }
+}
+
+/* ------------------------------ Trust badges --------------------------------- */
+
+.trust-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--suce-silver-light);
+  border: 1px solid var(--suce-silver-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.trust-item {
+  background: var(--suce-white);
+  padding: 18px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.trust-item i {
+  font-size: 1.3rem;
+  color: var(--suce-steel);
+}
+.trust-item span {
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+@media (max-width: 767px) {
+  .trust-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ------------------------------ Scroll row ------------------------------------ */
+
+.scroll-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+  -ms-overflow-style: none;
+  scrollbar-width: thin;
+}
+.scroll-row > * {
+  flex: 0 0 200px;
+  scroll-snap-align: start;
+}
+@media (min-width: 768px) {
+  .scroll-row > * {
+    flex-basis: 240px;
+  }
+}
+
+/* ------------------------------ Price badge strip ------------------------------ */
+
+.deal-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--suce-ink);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 4px 9px;
+  border-radius: 999px;
+  z-index: 3;
+}
+
+/* ------------------------------ Testimonials ------------------------------------ */
+
+.testimonial-card {
+  background: var(--suce-white);
+  border: 1px solid var(--suce-silver-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  height: 100%;
+}
+.testimonial-quote {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--suce-ink);
+}
+
+/* ------------------------------ Demo mode badge ------------------------------------ */
+
+.suce-demo-badge {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 1500;
+  background: var(--suce-ink);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  padding: 7px 12px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.88;
+  box-shadow: 0 8px 20px rgba(10,10,11,0.18);
+}
+.suce-demo-badge i {
+  font-size: 0.85rem;
+}
+
+/* ---------------------------- Fade-in utility -------------------------------- */
+
+.fade-in {
+  animation: fadeIn 0.4s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
