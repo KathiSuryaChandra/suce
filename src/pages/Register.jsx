@@ -174,7 +174,7 @@ export default function Register() {
   }
 
   return (
-    <div className="container-suce section" style={{ maxWidth: 480 }}>
+    <div className="auth-shell" style={{ '--auth-max-width': '480px' }}>
       <img src={logoDark} alt="SUCE" className="suce-logo-mark mb-4" />
       <span className="eyebrow">Join SUCE</span>
       <h2 className="mt-1 mb-4">Create your account</h2>

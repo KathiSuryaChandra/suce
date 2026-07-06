@@ -33,7 +33,7 @@ export default function ResetPassword() {
 
   if (!token) {
     return (
-      <div className="container-suce section text-center" style={{ maxWidth: 440 }}>
+      <div className="auth-shell text-center">
         <h3>This link is invalid</h3>
         <p className="text-secondary">Request a new password reset link to continue.</p>
         <Link to="/forgot-password" className="btn btn-suce-outline mt-3">Request new link</Link>
@@ -42,7 +42,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="container-suce section" style={{ maxWidth: 440 }}>
+    <div className="auth-shell">
       <span className="eyebrow">Reset access</span>
       <h2 className="mt-1 mb-4">Choose a new password</h2>
       <form onSubmit={handleSubmit}>

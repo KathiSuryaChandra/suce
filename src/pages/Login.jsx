@@ -40,7 +40,7 @@ export default function Login() {
   }
 
   return (
-    <div className="container-suce section" style={{ maxWidth: 440 }}>
+    <div className="auth-shell">
       <img src={logoDark} alt="SUCE" className="suce-logo-mark mb-4" />
       <span className="eyebrow">Welcome back</span>
       <h2 className="mt-1 mb-4">Sign in</h2>
@@ -60,7 +60,7 @@ export default function Login() {
         </div>
 
         <div className="mb-2">
-          <div className="d-flex justify-content-between">
+          <div className="auth-row">
             <label className="form-label-suce" htmlFor="password">Password</label>
             <Link to="/forgot-password" style={{ fontSize: '0.82rem', color: 'var(--suce-steel)' }}>Forgot password?</Link>
           </div>

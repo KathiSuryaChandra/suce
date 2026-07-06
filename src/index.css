@@ -619,7 +619,41 @@ a {
 }
 
 /* --------------------------------- Logo mark --------------------------------- */
+/* ------------------------------ Auth pages (login/register/forgot/reset) ------------------------------
+   Desktop: centered card with shadow, like a real app modal.
+   Mobile: full-bleed, edge-to-edge, reduced padding, native-app feel.
+   --------------------------------------------------------------------------- */
 
+.auth-shell {
+  width: 100%;
+  max-width: var(--auth-max-width, 440px);
+  margin: 48px auto;
+  padding: 40px 36px;
+  background: var(--suce-white);
+  border: 1px solid var(--suce-silver-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lift);
+}
+
+.auth-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+@media (max-width: 575px) {
+  .auth-shell {
+    max-width: 100%;
+    margin: 0;
+    padding: 28px 20px 40px;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: calc(100vh - 64px);
+  }
+}
 .suce-logo-mark {
   height: 34px;
   width: auto;

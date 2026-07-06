@@ -26,7 +26,7 @@ export default function ForgotPassword() {
 
   if (submitted) {
     return (
-      <div className="container-suce section text-center" style={{ maxWidth: 440 }}>
+      <div className="auth-shell text-center">
         <i className="bi bi-envelope-check" style={{ fontSize: '2.2rem', color: 'var(--suce-silver)' }} />
         <h3 className="mt-3 mb-2">Check your inbox</h3>
         <p className="text-secondary">
@@ -38,7 +38,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="container-suce section" style={{ maxWidth: 440 }}>
+    <div className="auth-shell">
       <span className="eyebrow">Reset access</span>
       <h2 className="mt-1 mb-2">Forgot your password?</h2>
       <p className="text-secondary mb-4">Enter your email and we'll send you a reset link.</p>
