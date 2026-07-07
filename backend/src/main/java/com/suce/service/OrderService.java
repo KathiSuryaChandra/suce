@@ -17,11 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,18 +52,18 @@ public class OrderService {
     
     private final OrderRepository   orderRepo;
     private final ProductRepository productRepo;
-    private final JavaMailSender    mailSender;
+    private final EmailService      emailService;
 
-    @Value("${spring.mail.username}")
+    
     private String fromEmail;
 
     public OrderService(OrderRepository orderRepo,
-                        ProductRepository productRepo,
-                        JavaMailSender mailSender) {
-        this.orderRepo   = orderRepo;
-        this.productRepo = productRepo;
-        this.mailSender  = mailSender;
-    }
+            ProductRepository productRepo,
+            EmailService emailService) {
+this.orderRepo   = orderRepo;
+this.productRepo = productRepo;
+this.emailService = emailService;
+}
 
     // ── Place a new order ─────────────────────────────────────────────
     @Transactional
@@ -198,12 +195,7 @@ public class OrderService {
                     + "Thank you for shopping with SUCE!\n"
                     + "— The SUCE Team";
 
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(user.getEmail());
-            message.setSubject("Order Confirmed — " + order.getOrderNumber());
-            message.setText(body);
-            mailSender.send(message);
+            emailService.send(user.getEmail(), "Order Confirmed — " + order.getOrderNumber(), body);
 
         } catch (Exception e) {
             System.err.println("[SUCE] Order confirmation email failed: " + e.getMessage());
@@ -218,12 +210,7 @@ public class OrderService {
                     + "If you have any questions, please contact us.\n\n"
                     + "— The SUCE Team";
 
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(user.getEmail());
-            message.setSubject("Order Cancelled — " + order.getOrderNumber());
-            message.setText(body);
-            mailSender.send(message);
+            emailService.send(user.getEmail(), "Order Cancelled — " + order.getOrderNumber(), body);
 
         } catch (Exception e) {
             System.err.println("[SUCE] Cancellation email failed for order "

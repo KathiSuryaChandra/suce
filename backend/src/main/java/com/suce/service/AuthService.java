@@ -16,8 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,12 +36,12 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authManager;
     private final OtpService otpService;
-    private final JavaMailSender mailSender;
+    private final EmailService emailService;
 
     @Value("${app.jwt.refresh-expiry-ms}")
     private long refreshExpiryMs;
 
-    @Value("${spring.mail.username}")
+   
     private String fromEmail;
 
     @Value("${app.frontend-url}")
@@ -55,14 +53,14 @@ public class AuthService {
                        JwtUtil jwtUtil,
                        AuthenticationManager authManager,
                        OtpService otpService,
-                       JavaMailSender mailSender) {
+                       EmailService emailService) {
         this.userRepo = userRepo;
         this.rtRepo = rtRepo;
         this.encoder = encoder;
         this.jwtUtil = jwtUtil;
         this.authManager = authManager;
         this.otpService = otpService;
-        this.mailSender = mailSender;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -201,18 +199,7 @@ public class AuthService {
                 "your password will remain unchanged.\n\n" +
                 "— The SUCE Team";
 
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(user.getEmail());
-            message.setSubject("Reset your SUCE password");
-            message.setText(body);
-            mailSender.send(message);
-        } catch (Exception e) {
-            // Log but don't crash — admin can still issue a reset manually
-            // if email delivery is down.
-            System.err.println("[SUCE] Reset-password email failed to " + user.getEmail() + ": " + e.getMessage());
-        }
+        emailService.send(user.getEmail(), "Reset your SUCE password", body);
     }
 
     @Transactional

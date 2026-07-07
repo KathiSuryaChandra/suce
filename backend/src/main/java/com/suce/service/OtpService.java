@@ -5,8 +5,6 @@ import com.suce.exception.ApiException;
 import com.suce.repository.OtpVerificationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +15,9 @@ import java.util.Random;
 public class OtpService {
 
     private final OtpVerificationRepository otpRepo;
-    private final JavaMailSender mailSender;
+    private final EmailService emailService;
 
-    @Value("${spring.mail.username}")
+   
     private String fromEmail;
    
     // Set to true to print OTP in console instead of sending real SMS
@@ -27,9 +25,9 @@ public class OtpService {
     @Value("${app.sms.mock:true}")
     private boolean smsMock;
 
-    public OtpService(OtpVerificationRepository otpRepo, JavaMailSender mailSender) {
+    public OtpService(OtpVerificationRepository otpRepo, EmailService emailService) {
         this.otpRepo = otpRepo;
-        this.mailSender = mailSender;
+        this.emailService = emailService;
     }
 
     // ── Send OTP ──────────────────────────────────────────────────────
@@ -98,17 +96,7 @@ public class OtpService {
                    "— The SUCE Team";
         }
 
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject(subject);
-            message.setText(body);
-            mailSender.send(message);
-        } catch (Exception e) {
-            // Log but don't crash — OTP is still saved in DB
-            System.err.println("[SUCE] Email send failed to " + toEmail + ": " + e.getMessage());
-        }
+        emailService.send(toEmail, subject, body);
     }
 
     // ── SMS sender ────────────────────────────────────────────────────

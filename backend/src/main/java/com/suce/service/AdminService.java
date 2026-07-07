@@ -17,8 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,21 +31,19 @@ public class AdminService {
     private final ProductRepository  productRepo;
     private final UserRepository     userRepo;
     private final WishlistRepository wishlistRepo;
-    private final JavaMailSender     mailSender;
+    private final EmailService       emailService;
 
-    @Value("${spring.mail.username}")
-    private String fromEmail;
-
+    
     public AdminService(OrderRepository orderRepo,
                         ProductRepository productRepo,
                         UserRepository userRepo,
                         WishlistRepository wishlistRepo,
-                        JavaMailSender mailSender) {
+                        EmailService emailService) {
         this.orderRepo    = orderRepo;
         this.productRepo  = productRepo;
         this.userRepo     = userRepo;
         this.wishlistRepo = wishlistRepo;
-        this.mailSender   = mailSender;
+        this.emailService = emailService;
     }
 
     // ── Dashboard stats ───────────────────────────────────────────────
@@ -209,12 +205,7 @@ public class AdminService {
                 default -> { return; }
             }
 
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(order.getUser().getEmail());
-            message.setSubject(subject);
-            message.setText(body);
-            mailSender.send(message);
+            emailService.send(order.getUser().getEmail(), subject, body);
 
         } catch (Exception e) {
             System.err.println("[SUCE] Status email failed for order "
