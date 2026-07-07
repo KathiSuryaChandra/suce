@@ -141,7 +141,7 @@ export default function ProductDetails() {
             )}
           </div>
           {images.length > 1 && (
-            <div className="d-flex gap-2">
+            <div className="d-flex gap-2" style={{ overflowX: 'auto', flexWrap: 'nowrap', paddingBottom: 4 }}>
               {images.map((img, idx) => (
                 <button
                   key={idx}
@@ -150,8 +150,10 @@ export default function ProductDetails() {
                   style={{
                     width: 64,
                     height: 64,
+                    minWidth: 64,
                     borderRadius: 4,
                     overflow: 'hidden',
+                    flexShrink: 0,
                     outline: idx === activeImage ? '2px solid var(--suce-ink)' : '1px solid var(--suce-silver-light)',
                   }}
                 >
@@ -175,7 +177,7 @@ export default function ProductDetails() {
 
           <hr className="hairline my-4" />
 
-          <div className="d-flex align-items-center gap-3 mb-4">
+         <div className="d-flex align-items-center gap-3 mb-4" style={{ flexWrap: 'wrap' }}>
             <span className={`status-pill ${outOfStock ? 'cancelled' : 'delivered'}`}>
               {outOfStock ? 'Out of stock' : `${product.stockQuantity} in stock`}
             </span>
@@ -252,7 +254,7 @@ export default function ProductDetails() {
           <div className="d-flex flex-column gap-4">
             {reviews.map((r) => (
               <div key={r.id}>
-                <div className="d-flex align-items-center justify-content-between">
+               <div className="d-flex align-items-center justify-content-between" style={{ flexWrap: 'wrap', gap: 4 }}>
                   <strong>{r.user?.firstName ?? 'Verified buyer'}</strong>
                   <span className="text-secondary" style={{ fontSize: '0.78rem' }}>
                     {new Date(r.createdAt).toLocaleDateString()}
