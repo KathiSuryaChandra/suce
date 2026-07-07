@@ -21,7 +21,7 @@ export default function ResetPassword() {
     setError('')
     setSubmitting(true)
     try {
-      await authService.resetPassword({ token, password })
+      await authService.resetPassword({ token, newPassword: password })
       toast.success('Password updated — sign in with your new password')
       navigate('/login', { replace: true })
     } catch (err) {
