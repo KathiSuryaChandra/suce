@@ -4,11 +4,11 @@ import { useCart } from '../hooks/useCart'
 import { useAuth } from '../hooks/useAuth'
 import { formatCurrency } from '../components/PriceTag.jsx'
 import orderService from '../services/orderService'
+import paymentService from '../services/paymentService'
 import { useToast } from '../context/ToastContext.jsx'
 
 const PAYMENT_METHODS = [
   { id: 'RAZORPAY', label: 'Razorpay', icon: 'bi-credit-card' },
-  { id: 'STRIPE', label: 'Card (Stripe)', icon: 'bi-credit-card-2-front' },
   { id: 'COD', label: 'Cash on delivery', icon: 'bi-cash-coin' },
 ]
 
@@ -38,7 +38,14 @@ export default function Checkout() {
   }
 
   function isValid() {
-    return address.fullName && address.line1 && address.city && address.state && address.postalCode && address.phone
+    return (
+      address.fullName &&
+      address.line1 &&
+      address.city &&
+      address.state &&
+      address.postalCode &&
+      address.phone
+    )
   }
 
   async function handlePlaceOrder(e) {
@@ -48,18 +55,70 @@ export default function Checkout() {
       return
     }
     setPlacing(true)
+
     try {
+      // 1. Create the order in your backend (PaymentStatus: PENDING)
       const order = await orderService.place({
         shippingAddress: address,
         paymentMethod,
         items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity })),
       })
-      await clear()
-      toast.success('Order placed')
-      navigate(`/orders/${order.id}`, { replace: true })
+
+      // 2. COD — no payment needed, go straight to order page
+      if (paymentMethod === 'COD') {
+        await clear()
+        toast.success('Order placed!')
+        navigate(`/orders/${order.id}`, { replace: true })
+        return
+      }
+
+      // 3. Razorpay — create gateway order on backend
+      const rzpData = await paymentService.createOrder(order.id, 'RAZORPAY')
+
+      // 4. Open Razorpay checkout popup
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: rzpData.amount,
+        currency: rzpData.currency,
+        name: 'SUCE',
+        description: `Order ${rzpData.orderNumber}`,
+        order_id: rzpData.gatewayOrderId,
+        prefill: {
+          name: address.fullName,
+          contact: address.phone,
+        },
+        theme: {
+          color: '#0a0a0a',
+        },
+        handler: async (response) => {
+          try {
+            // 5. Verify payment signature on backend
+            await paymentService.verify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            })
+            await clear()
+            toast.success('Payment successful!')
+            navigate(`/orders/${order.id}`, { replace: true })
+          } catch {
+            toast.error('Payment verification failed — contact support')
+            setPlacing(false)
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            toast.error('Payment cancelled')
+            setPlacing(false)
+          },
+        },
+      }
+
+      const rzp = new window.Razorpay(options)
+      rzp.open()
+
     } catch (err) {
       toast.error(err.response?.data?.message || 'Could not place your order — try again')
-    } finally {
       setPlacing(false)
     }
   }
@@ -80,31 +139,65 @@ export default function Checkout() {
           <div className="row g-3 mb-4">
             <div className="col-12">
               <label className="form-label-suce">Full name</label>
-              <input className="form-control-suce" value={address.fullName} onChange={(e) => update('fullName', e.target.value)} required />
+              <input
+                className="form-control-suce"
+                value={address.fullName}
+                onChange={(e) => update('fullName', e.target.value)}
+                required
+              />
             </div>
             <div className="col-12">
               <label className="form-label-suce">Address line 1</label>
-              <input className="form-control-suce" value={address.line1} onChange={(e) => update('line1', e.target.value)} required />
+              <input
+                className="form-control-suce"
+                value={address.line1}
+                onChange={(e) => update('line1', e.target.value)}
+                required
+              />
             </div>
             <div className="col-12">
               <label className="form-label-suce">Address line 2 (optional)</label>
-              <input className="form-control-suce" value={address.line2} onChange={(e) => update('line2', e.target.value)} />
+              <input
+                className="form-control-suce"
+                value={address.line2}
+                onChange={(e) => update('line2', e.target.value)}
+              />
             </div>
             <div className="col-md-4">
               <label className="form-label-suce">City</label>
-              <input className="form-control-suce" value={address.city} onChange={(e) => update('city', e.target.value)} required />
+              <input
+                className="form-control-suce"
+                value={address.city}
+                onChange={(e) => update('city', e.target.value)}
+                required
+              />
             </div>
             <div className="col-md-4">
               <label className="form-label-suce">State</label>
-              <input className="form-control-suce" value={address.state} onChange={(e) => update('state', e.target.value)} required />
+              <input
+                className="form-control-suce"
+                value={address.state}
+                onChange={(e) => update('state', e.target.value)}
+                required
+              />
             </div>
             <div className="col-md-4">
               <label className="form-label-suce">Postal code</label>
-              <input className="form-control-suce" value={address.postalCode} onChange={(e) => update('postalCode', e.target.value)} required />
+              <input
+                className="form-control-suce"
+                value={address.postalCode}
+                onChange={(e) => update('postalCode', e.target.value)}
+                required
+              />
             </div>
             <div className="col-12">
               <label className="form-label-suce">Phone</label>
-              <input className="form-control-suce" value={address.phone} onChange={(e) => update('phone', e.target.value)} required />
+              <input
+                className="form-control-suce"
+                value={address.phone}
+                onChange={(e) => update('phone', e.target.value)}
+                required
+              />
             </div>
           </div>
 
@@ -136,32 +229,59 @@ export default function Checkout() {
         <div className="col-lg-4">
           <div className="card-suce p-4">
             <h5 className="mb-4">Order summary</h5>
-            <div className="d-flex flex-column gap-2 mb-3" style={{ maxHeight: 220, overflowY: 'auto' }}>
+            <div
+              className="d-flex flex-column gap-2 mb-3"
+              style={{ maxHeight: 220, overflowY: 'auto' }}
+            >
               {items.map((i) => (
-                <div key={i.id} className="d-flex justify-content-between" style={{ fontSize: '0.85rem' }}>
-                  <span className="text-secondary">{i.product.name} × {i.quantity}</span>
+                <div
+                  key={i.id}
+                  className="d-flex justify-content-between"
+                  style={{ fontSize: '0.85rem' }}
+                >
+                  <span className="text-secondary">
+                    {i.product.name} × {i.quantity}
+                  </span>
                   <span className="font-mono">
-                    {formatCurrency((i.product.discountPrice ?? i.product.price) * i.quantity)}
+                    {formatCurrency(
+                      (i.product.discountPrice ?? i.product.price) * i.quantity
+                    )}
                   </span>
                 </div>
               ))}
             </div>
             <hr className="hairline mb-3" />
-            <div className="d-flex justify-content-between mb-2" style={{ fontSize: '0.9rem' }}>
+            <div
+              className="d-flex justify-content-between mb-2"
+              style={{ fontSize: '0.9rem' }}
+            >
               <span className="text-secondary">Subtotal</span>
               <span className="font-mono">{formatCurrency(subtotal)}</span>
             </div>
-            <div className="d-flex justify-content-between mb-3" style={{ fontSize: '0.9rem' }}>
+            <div
+              className="d-flex justify-content-between mb-3"
+              style={{ fontSize: '0.9rem' }}
+            >
               <span className="text-secondary">Shipping</span>
-              <span className="font-mono">{shipping === 0 ? 'Free' : formatCurrency(shipping)}</span>
+              <span className="font-mono">
+                {shipping === 0 ? 'Free' : formatCurrency(shipping)}
+              </span>
             </div>
             <hr className="hairline mb-3" />
             <div className="d-flex justify-content-between mb-4">
               <strong>Total</strong>
               <strong className="font-mono">{formatCurrency(total)}</strong>
             </div>
-            <button type="submit" className="btn btn-suce-primary w-100" disabled={placing}>
-              {placing ? 'Placing order…' : 'Place order'}
+            <button
+              type="submit"
+              className="btn btn-suce-primary w-100"
+              disabled={placing}
+            >
+              {placing
+                ? paymentMethod === 'COD'
+                  ? 'Placing order…'
+                  : 'Opening payment…'
+                : 'Place order'}
             </button>
           </div>
         </div>
