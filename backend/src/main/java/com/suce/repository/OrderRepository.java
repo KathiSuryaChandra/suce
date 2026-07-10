@@ -11,8 +11,9 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
+	Optional<Order> findByGatewayOrderId(String gatewayOrderId);
     Page<Order> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
     Optional<Order> findByIdAndUserId(Long id, Long userId);
     Page<Order> findByStatusOrderByCreatedAtDesc(OrderStatus status, Pageable pageable);
