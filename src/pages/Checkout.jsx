@@ -74,7 +74,7 @@ export default function Checkout() {
 
       // 3. Razorpay — create gateway order on backend
       const rzpData = await paymentService.createOrder(order.id, 'RAZORPAY')
-
+       console.log('Razorpay Key:', import.meta.env.VITE_RAZORPAY_KEY_ID)
       // 4. Open Razorpay checkout popup
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
